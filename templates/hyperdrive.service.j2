@@ -1,0 +1,13 @@
+[Unit]
+Description=Hyperdrive
+After=network.target
+
+[Service]
+Type=simple
+User={{ hyperdrive_user }}
+ExecStart={{ hyperdrive_path }}/hyperg-{{ hyperdrive_version }}/hyperg {{ hyperdrive_extra_args }}
+WorkingDirectory={{ hyperdrive_path }}/hyperg-{{ hyperdrive_version }}
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

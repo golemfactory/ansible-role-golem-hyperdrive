@@ -1,0 +1,9 @@
+---
+# handlers file for golem-hyperdrive
+
+- name: restart hyperdrive
+  become: yes
+  systemd:
+    daemon_reload: yes
+    name: hyperdrive
+    state: restarted

@@ -1,0 +1,85 @@
+---
+# tasks file for golem-hyperdrive
+
+- name: create group
+  become: yes
+  group:
+    name: "{{ hyperdrive_user_group }}"
+    system: yes
+    state: present
+
+- name: create user
+  become: yes
+  user:
+    name: "{{ hyperdrive_user }}"
+    group: "{{ hyperdrive_user_group }}"
+    system: yes
+    home: "{{ hyperdrive_user_home }}"
+    state: present
+
+- name: create directory for hyperdrive
+  become: yes
+  file:
+    path: "{{ hyperdrive_path }}"
+    state: directory
+    owner: "{{ hyperdrive_user }}"
+    group: "{{ hyperdrive_user_group }}"
+
+- name: check if hyperdrive is unpacked
+  become: yes
+  stat:
+    path: "{{ hyperdrive_path }}/hyperg-{{ hyperdrive_version }}"
+  register: hyperdrive_stat
+
+- name: download and unpack hyperdrive
+  when: not hyperdrive_stat.stat.exists
+  become: yes
+  block:
+
+    # It would be much easier if the directory inside the archive was named
+    # hyperg-{{version}}, not just hyperg
+
+    - name: create temporary directory to unpack hyperdrive
+      tempfile:
+        state: directory
+      register: tempdir
+
+    - name: unpack release archive
+      unarchive:
+        src: "{{ hyperdrive_release_url }}"
+        dest: "{{ tempdir.path }}"
+        remote_src: yes
+
+    - name: move unpacked release to its place
+      command: "mv {{ tempdir.path }}/hyperg {{ hyperdrive_path }}/hyperg-{{ hyperdrive_version }}"
+
+  always:
+
+    - name: delete tempdir
+      file:
+        path: "{{ tempdir.path }}"
+        state: absent
+
+- name: set hyperg files owner
+  become: yes
+  file:
+    path: "{{ hyperdrive_path }}/hyperg-{{ hyperdrive_version }}"
+    state: directory
+    recurse: yes
+    owner: "{{ hyperdrive_user }}"
+    group: "{{ hyperdrive_user_group }}"
+
+- name: create systemd unit
+  become: yes
+  template:
+    src: hyperdrive.service.j2
+    dest: /etc/systemd/system/hyperdrive.service
+  notify: restart hyperdrive
+
+- name: start hyperdrive
+  become: yes
+  systemd:
+    daemon_reload: yes
+    name: hyperdrive
+    state: started
+    enabled: yes
