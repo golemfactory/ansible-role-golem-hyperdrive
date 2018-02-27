@@ -7,4 +7,4 @@ hyperdrive_release_url: "https://github.com/mfranciszkiewicz/golem-hyperdrive/re
 hyperdrive_user: hyperdrive
 hyperdrive_user_group: "{{ hyperdrive_user }}"
 hyperdrive_user_home: "/var/lib/{{ hyperdrive_user }}"
-hyperdrive_version: 0.2.4
+hyperdrive_version: 0.2.5
