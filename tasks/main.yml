@@ -51,7 +51,7 @@
         remote_src: yes
 
     - name: move unpacked release to its place
-      command: "mv {{ tempdir.path }}/hyperg {{ hyperdrive_path }}/hyperg-{{ hyperdrive_version }}"
+      command: "mv {{ tempdir.path }}/hyperg_{{ hyperdrive_version }}_linux-x64 {{ hyperdrive_path }}/hyperg-{{ hyperdrive_version }}"
 
   always:
 
