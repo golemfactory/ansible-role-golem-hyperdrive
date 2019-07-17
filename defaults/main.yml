@@ -7,5 +7,5 @@ hyperdrive_release_url: "https://github.com/golemfactory/simple-transfer/release
 hyperdrive_user: golem
 hyperdrive_user_group: "{{ hyperdrive_user }}"
 hyperdrive_user_home: "/home/{{ hyperdrive_user }}"
-hyperdrive_version: 0.3.2
+hyperdrive_version: 0.3.3
 
